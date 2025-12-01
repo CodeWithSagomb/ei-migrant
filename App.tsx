@@ -5,6 +5,8 @@ import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Missions } from './pages/Missions';
 import { Contact } from './pages/Contact';
+import { Donation } from './pages/Donation';
+import { News } from './pages/News';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Component that handles animations and routing
@@ -42,7 +44,9 @@ const AnimatedRoutes: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/missions" element={<Missions />} />
+            <Route path="/news" element={<News />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/donation" element={<Donation />} />
           </Routes>
         </motion.div>
       </AnimatePresence>

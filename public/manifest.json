@@ -1,0 +1,17 @@
+{
+  "name": "EI-MIGRANT",
+  "short_name": "EI-MIGRANT",
+  "description": "Organisation à but non lucratif soutenant l'intégration des migrants au Sénégal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007EA7",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

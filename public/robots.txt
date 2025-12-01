@@ -1,0 +1,10 @@
+# EI-MIGRANT Website - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.ei-migrant.org/sitemap.xml
+
+# Note: Update the domain above with your actual domain when deploying

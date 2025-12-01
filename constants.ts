@@ -18,56 +18,75 @@ export const SOCIAL_LINKS = {
 
 export const MISSIONS: MissionData[] = [
   {
-    id: "sante",
-    title: "Santé & Bien-être",
-    description: "Améliorer l'accès aux soins et la prévention pour les populations vulnérables.",
+    id: "protection",
+    title: "Protection & accompagnement des migrants vulnérables",
+    description: "Accompagner, informer et protéger les migrants face aux défis de la migration.",
     details: [
-      "Dépistage des maladies (cancer du col de l'utérus, cancer du sein, VIH).",
-      "Accent particulier sur la Santé de la Reproduction des Ado-Jeunes (SRAJ).",
-      "Lutte pour l'abandon des Mutilations Génitales Féminines (MGF).",
-      "Garantie d'un suivi médical adéquat via des partenariats."
+      "Sensibilisation sur les dangers de la migration irrégulière",
+      "Information sur les alternatives légales",
+      "Appui psychosocial aux migrants de retour ou en détresse",
+      "Assistance sociale et orientation vers les services",
+      "Accompagnement juridique de base (orientation, plaidoyer)"
     ],
-    iconName: "heart",
+    iconName: "shield",
     image: IMAGES.missions.health
   },
   {
-    id: "education",
-    title: "Éducation & Jeunesse",
-    description: "Informer et sensibiliser pour construire un avenir meilleur.",
+    id: "reintegration",
+    title: "Réintégration socio-économique des migrants de retour",
+    description: "Faciliter la réinsertion durable des migrants de retour dans leur communauté.",
     details: [
-      "Prévention des grossesses précoces.",
-      "Sensibilisation aux risques associés pour les ado-jeunes migrants.",
-      "Information sur la contraception et les droits sexuels et reproductifs.",
-      "Autonomisation par la prise de décision éclairée."
+      "Formations professionnelles certifiantes",
+      "Coaching entrepreneurial",
+      "Appui à l'insertion économique",
+      "Programmes de micro-entreprises",
+      "Renforcement des compétences numériques",
+      "Orientation et mentorat"
     ],
-    iconName: "book",
+    iconName: "refresh",
+    image: IMAGES.missions.employment
+  },
+  {
+    id: "jeunesse",
+    title: "Autonomisation des jeunes et prévention des migrations irrégulières",
+    description: "Offrir aux jeunes des alternatives à la migration irrégulière par le développement personnel et professionnel.",
+    details: [
+      "Clubs de leadership et développement personnel",
+      "Activités sportives + sensibilisation",
+      "Mentorat pour jeunes NEET (non scolarisés, non employés)",
+      "Ateliers de prise de parole, confiance en soi",
+      "Incubation de mini projets pour jeunes",
+      "Campagnes communautaires dans les zones à risque"
+    ],
+    iconName: "sparkles",
     image: IMAGES.missions.education
   },
   {
     id: "genre",
-    title: "Genre & Équité",
-    description: "Promouvoir l'égalité et lutter contre les violences.",
+    title: "Genre & migration",
+    description: "Protéger et autonomiser les femmes migrantes face aux défis spécifiques liés au genre.",
     details: [
-      "Promotion de l'équité et l'égalité entre les genres.",
-      "Élimination des Violences Basées sur le Genre (VBG).",
-      "Reconnaissance des droits et besoins spécifiques des hommes et des femmes.",
-      "Soutien à l'autonomisation des femmes migrantes."
+      "Protection des femmes migrantes",
+      "Renforcement économique des jeunes femmes",
+      "Lutte contre les violences basées sur le genre (VBG) liées à la migration",
+      "Appui aux femmes cheffes de ménages migrantes"
     ],
     iconName: "users",
     image: IMAGES.missions.gender
   },
   {
-    id: "emploi",
-    title: "Emploi & Autonomisation",
-    description: "Faciliter l'intégration économique et sociale.",
+    id: "plaidoyer",
+    title: "Plaidoyer & renforcement communautaire",
+    description: "Mobiliser les communautés et sensibiliser sur les enjeux de la migration régulière.",
     details: [
-      "Programmes de formation professionnelle.",
-      "Accompagnement à l'entrepreneuriat.",
-      "Aide à la recherche d'emploi.",
-      "Acquisition de compétences pour l'intégration sur le marché du travail sénégalais."
+      "Sensibilisation communautaire",
+      "Renforcement des leaders communautaires",
+      "Dialogue avec les autorités locales",
+      "Campagnes digitales",
+      "Événements publics sur la migration régulière"
     ],
-    iconName: "briefcase",
-    image: IMAGES.missions.employment
+    iconName: "megaphone",
+    image: IMAGES.community
   }
 ];
 

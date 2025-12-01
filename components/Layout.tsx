@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X as CloseIcon, Phone, Mail, Heart } from 'lucide-react';
 import { CONTACT_INFO, SOCIAL_LINKS } from '../constants';
+import { IMAGES } from '../imageConstants';
 
 // Social media SVG icons (using simple SVG since Lucide icons are deprecated for brands)
 const FacebookIcon = () => (
@@ -34,6 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { label: 'Accueil', path: '/' },
     { label: 'À Propos', path: '/about' },
     { label: 'Nos Missions', path: '/missions' },
+    { label: 'Actualités', path: '/news' },
     { label: 'Contact', path: '/contact' },
   ];
 
@@ -77,12 +79,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Logo Area */}
           <Link
             to="/"
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer"
           >
-            <div className="bg-primary text-white p-2 rounded-full font-bold text-xl">EI</div>
+            <img
+              src={IMAGES.logo}
+              alt="EI-MIGRANT Logo"
+              className="h-16 md:h-20 w-auto object-contain"
+            />
             <div className="flex flex-col leading-tight">
-              <span className="text-xl font-bold text-primary tracking-wide">MIGRANT</span>
-              <span className="text-[10px] text-gray-500 uppercase tracking-widest">Équité & Inclusion</span>
+              <span className="text-xl md:text-2xl font-bold text-primary tracking-wide">EI-MIGRANT</span>
+              <span className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest">Équité & Inclusion</span>
             </div>
           </Link>
 
@@ -99,9 +105,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {item.label}
               </Link>
             ))}
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-bold shadow-lg transform hover:scale-105 transition-all flex items-center gap-2">
+            <Link
+              to="/donation"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-bold shadow-lg transform hover:scale-105 transition-all flex items-center gap-2"
+            >
               <Heart size={16} fill="white" /> Faire un don
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -129,9 +138,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {item.label}
                 </Link>
               ))}
-              <button className="bg-orange-500 text-white py-3 rounded-lg font-bold w-full flex justify-center items-center gap-2">
-                 <Heart size={18} fill="white" /> Faire un don
-              </button>
+              <Link
+                to="/donation"
+                onClick={handleMobileMenuClose}
+                className="bg-orange-500 text-white py-3 rounded-lg font-bold w-full flex justify-center items-center gap-2"
+              >
+                <Heart size={18} fill="white" /> Faire un don
+              </Link>
             </div>
           </div>
         )}

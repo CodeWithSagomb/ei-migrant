@@ -4,9 +4,12 @@ import { MapPin, Phone, Mail, Send, Loader2, AlertCircle } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
 import { IMAGES } from '../imageConstants';
 import emailjs from '@emailjs/browser';
+import { contactFormSchema, formatPhoneNumber, type ContactFormData } from '../validation/contactSchema';
+import { z } from 'zod';
+import { SEO, SEO_CONFIG } from '../components/SEO';
 
 export const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
     phone: '',
@@ -16,15 +19,73 @@ export const Contact: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Clear field error when user starts typing
+    if (fieldErrors[name as keyof ContactFormData]) {
+      setFieldErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+
+    // Apply phone formatting as user types
+    if (name === 'phone' && value) {
+      const formatted = formatPhoneNumber(value);
+      setFormData({ ...formData, [name]: formatted });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    // Skip validation for empty optional fields
+    if (name === 'phone' && !value.trim()) {
+      return;
+    }
+
+    // Validate single field on blur
+    try {
+      const fieldSchema = contactFormSchema.shape[name as keyof ContactFormData];
+      fieldSchema.parse(value);
+      // Clear error if validation passes
+      setFieldErrors(prev => ({ ...prev, [name]: undefined }));
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setFieldErrors(prev => ({
+          ...prev,
+          [name]: error.errors[0]?.message || 'Erreur de validation'
+        }));
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setFieldErrors({});
+
+    // Validate entire form before submission
+    try {
+      contactFormSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Set all field errors
+        const errors: Partial<Record<keyof ContactFormData, string>> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0] as keyof ContactFormData] = err.message;
+          }
+        });
+        setFieldErrors(errors);
+        setError('Veuillez corriger les erreurs dans le formulaire.');
+        setLoading(false);
+        return;
+      }
+    }
 
     // Check if EmailJS is configured
     const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -66,27 +127,30 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <div className="bg-white">
+    <>
+      <SEO {...SEO_CONFIG.contact} />
+      <div className="bg-white">
       {/* Header */}
-      <div className="bg-dark text-white py-16">
+      <div className="bg-dark text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Contactez-nous</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">Contactez-nous</h1>
           <p className="text-gray-300">
             Une question ? Envie de devenir partenaire ou bénévole ? Écrivez-nous.
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid md:grid-cols-2 gap-12">
           
           {/* Contact Info Side */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.4 }}
           >
-            <h2 className="text-2xl font-bold text-primary mb-8">Nos Coordonnées</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-primary mb-6">Nos Coordonnées</h2>
             
             <div className="space-y-8">
               <div className="flex items-start gap-4">
@@ -175,7 +239,9 @@ export const Contact: React.FC = () => {
                 )}
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">Nom complet</label>
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Nom complet <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       id="name"
@@ -184,12 +250,23 @@ export const Contact: React.FC = () => {
                       disabled={loading}
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg border ${
+                        fieldErrors.name ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-300'
+                      } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
                       placeholder="Votre nom"
                     />
+                    {fieldErrors.name && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle size={14} />
+                        {fieldErrors.name}
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Email <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="email"
                       id="email"
@@ -198,25 +275,47 @@ export const Contact: React.FC = () => {
                       disabled={loading}
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg border ${
+                        fieldErrors.email ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-300'
+                      } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
                       placeholder="votre@email.com"
                     />
+                    {fieldErrors.email && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle size={14} />
+                        {fieldErrors.email}
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-1">Téléphone <span className="text-gray-400 font-normal">(optionnel)</span></label>
+                    <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Téléphone <span className="text-gray-400 font-normal">(optionnel)</span>
+                    </label>
                     <input
                       type="tel"
                       id="phone"
                       name="phone"
                       disabled={loading}
-                      value={formData.phone}
+                      value={formData.phone || ''}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg border ${
+                        fieldErrors.phone ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-300'
+                      } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
                       placeholder="+221 XX XXX XX XX"
                     />
+                    {fieldErrors.phone && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle size={14} />
+                        {fieldErrors.phone}
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-1">Sujet</label>
+                    <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Sujet <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       id="subject"
@@ -225,12 +324,26 @@ export const Contact: React.FC = () => {
                       disabled={loading}
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg border ${
+                        fieldErrors.subject ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-300'
+                      } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
                       placeholder="Objet de votre message"
                     />
+                    {fieldErrors.subject && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle size={14} />
+                        {fieldErrors.subject}
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-1">Message</label>
+                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Message <span className="text-red-500">*</span>
+                      <span className="text-gray-400 text-xs font-normal ml-2">
+                        ({formData.message.length}/1000 caractères)
+                      </span>
+                    </label>
                     <textarea
                       id="message"
                       name="message"
@@ -239,9 +352,19 @@ export const Contact: React.FC = () => {
                       disabled={loading}
                       value={formData.message}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
+                      onBlur={handleBlur}
+                      maxLength={1000}
+                      className={`w-full px-4 py-3 rounded-lg border ${
+                        fieldErrors.message ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-300'
+                      } focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed resize-none`}
                       placeholder="Votre message ici..."
                     ></textarea>
+                    {fieldErrors.message && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle size={14} />
+                        {fieldErrors.message}
+                      </p>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -266,5 +389,6 @@ export const Contact: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

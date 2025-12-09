@@ -1,10 +1,14 @@
 /**
  * Image URLs for the EI-MIGRANT website
  *
- * HYBRID MODE: Using local images where available, Unsplash for the rest
+ * 🎉 ALL LOCAL IMAGES MODE: 100% original photos!
  * ========================================================================
- * ✅ Local: logo.png, founder-portrait.png
- * 🌐 External: All other images (hero, community, missions, etc.)
+ * ✅ Local: logo.png
+ *           hero/* (hero-background.jpeg)
+ *           team/* (founder_portrait.jpeg, team-member-1.jpeg)
+ *           missions/* (health, education, gender, employment, plaidoyer)
+ *           community/* (community-1.jpeg, community-2.jpeg)
+ * 🌐 External: None - All images are now local!
  *
  * RECOMMENDED IMAGE SIZES:
  * - logo: 512x512px (square, transparent background)
@@ -20,33 +24,34 @@
  * - Keep filenames descriptive (e.g., "health-program-dakar.jpg")
  */
 
-// Hybrid configuration: Local images where available, external otherwise
+// All images are now LOCAL - 100% original photos from EI-MIGRANT
 export const IMAGES = {
-  // Logo (LOCAL - using your uploaded logo)
+  // Logo (LOCAL - your organization logo)
   logo: '/images/logo.png',
 
-  // Home page images (EXTERNAL - Unsplash placeholders)
+  // Home page images (LOCAL - using your original photos)
   home: {
-    hero: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=80',
-    community1: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=500&fit=crop&q=80',
-    community2: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=400&h=500&fit=crop&q=80',
+    hero: '/images/hero/hero-background.jpeg', // Image de fond hero - Page d'accueil
+    community1: '/images/community/community-1.jpeg', // Photo "Soutien" - Section "Agir au plus près"
+    community2: '/images/community/community-2.jpeg', // Photo "Communauté" - Section "Agir au plus près"
   },
 
-  // About page images (HYBRID)
+  // About page images (LOCAL - using your original photos)
   about: {
-    integration: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=800&fit=crop&q=80',
-    founder: '/images/team/founder-portrait.png', // LOCAL - using your uploaded photo
+    integration: '/images/team/team-member-1.jpeg', // Photo pour section "Notre histoire"
+    founder: '/images/team/founder_portrait.jpeg', // Photo de la fondatrice
   },
 
-  // Mission page images (EXTERNAL - Unsplash placeholders)
+  // Mission page images (LOCAL - using your original photos)
   missions: {
-    health: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop&q=80',
-    education: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&h=600&fit=crop&q=80',
-    gender: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=600&fit=crop&q=80',
-    employment: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&h=600&fit=crop&q=80',
+    health: '/images/missions/employment.jpeg', // Photo pour "Protection & accompagnement"
+    education: '/images/missions/education.jpeg',
+    gender: '/images/missions/gender.jpeg',
+    employment: '/images/missions/health.jpeg', // Photo pour "Réintégration socio-économique"
+    plaidoyer: '/images/missions/plaidoyer.jpeg', // Photo pour "Plaidoyer & renforcement communautaire"
   },
 
-  // Community images (EXTERNAL - Unsplash placeholders)
+  // Community images (EXTERNAL - Unsplash placeholder - not used anymore, kept for compatibility)
   community: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=500&fit=crop&q=80',
 
   // Contact page images (EXTERNAL)

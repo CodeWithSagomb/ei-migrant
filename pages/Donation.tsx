@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, CreditCard, Smartphone, Building, CheckCircle, AlertCircle, Euro } from 'lucide-react';
+import { Heart, CreditCard, Smartphone, Building, CheckCircle, AlertCircle } from 'lucide-react';
 import { SEO, SEO_CONFIG } from '../components/SEO';
 
 export const Donation: React.FC = () => {
-  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [donationType, setDonationType] = useState<'onetime' | 'monthly'>('onetime');
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const predefinedAmounts = [10, 25, 50, 100, 250, 500];
 
   const paymentMethods = [
     {
@@ -36,30 +33,19 @@ export const Donation: React.FC = () => {
     },
   ];
 
-  const handleAmountClick = (amount: number) => {
-    setSelectedAmount(amount);
-    setCustomAmount('');
-  };
-
   const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setCustomAmount(value);
-    if (value) {
-      setSelectedAmount(null);
-    }
   };
 
   const getSelectedAmountValue = (): number => {
-    if (customAmount) {
-      return parseFloat(customAmount) || 0;
-    }
-    return selectedAmount || 0;
+    return parseFloat(customAmount) || 0;
   };
 
   const handleDonate = () => {
     const amount = getSelectedAmountValue();
-    if (amount < 5) {
-      alert('Le montant minimum est de 5€');
+    if (amount <= 0) {
+      alert('Veuillez entrer un montant valide');
       return;
     }
     if (!selectedPayment) {
@@ -72,7 +58,6 @@ export const Donation: React.FC = () => {
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      setSelectedAmount(null);
       setCustomAmount('');
       setSelectedPayment(null);
     }, 5000);
@@ -121,7 +106,7 @@ export const Donation: React.FC = () => {
                   <div>
                     <h3 className="font-bold text-xl mb-2">Merci pour votre générosité!</h3>
                     <p className="mb-2">
-                      Votre don de <strong>{getSelectedAmountValue()}€</strong> sera utilisé pour améliorer la vie des migrants vulnérables.
+                      Votre don de <strong>{getSelectedAmountValue()} FCFA</strong> sera utilisé pour améliorer la vie des migrants vulnérables.
                     </p>
                     <p className="text-sm text-green-700">
                       Un email de confirmation vous sera envoyé sous peu.
@@ -165,38 +150,29 @@ export const Donation: React.FC = () => {
 
               {/* Amount Selection */}
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-dark mb-4">Montant</h2>
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  {predefinedAmounts.map((amount) => (
-                    <button
-                      key={amount}
-                      onClick={() => handleAmountClick(amount)}
-                      className={`py-4 px-6 rounded-lg font-bold text-lg transition ${
-                        selectedAmount === amount
-                          ? 'bg-primary text-white shadow-lg scale-105'
-                          : 'bg-white text-dark border-2 border-gray-300 hover:border-primary hover:scale-102'
-                      }`}
-                    >
-                      {amount}€
-                    </button>
-                  ))}
-                </div>
+                <h2 className="text-2xl font-bold text-dark mb-6">Montant de votre don</h2>
 
-                {/* Custom Amount */}
-                <div className="relative">
+                {/* Custom Amount Only */}
+                <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
+                  <label htmlFor="amount" className="block text-sm font-semibold text-gray-700 mb-3">
+                    Entrez le montant que vous souhaitez donner (FCFA)
+                  </label>
                   <input
+                    id="amount"
                     type="number"
-                    min="5"
+                    min="1"
                     value={customAmount}
                     onChange={handleCustomAmountChange}
-                    placeholder="Autre montant (min. 5€)"
-                    className={`w-full py-4 px-6 pr-12 rounded-lg border-2 text-lg font-semibold outline-none transition ${
+                    placeholder="Ex: 5000"
+                    className={`w-full py-4 px-6 rounded-lg border-2 text-xl font-bold outline-none transition ${
                       customAmount
-                        ? 'border-primary ring-2 ring-primary/20'
-                        : 'border-gray-300 focus:border-primary'
+                        ? 'border-primary ring-4 ring-primary/20 bg-primary/5'
+                        : 'border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20'
                     }`}
                   />
-                  <Euro size={24} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <p className="mt-3 text-sm text-gray-600">
+                    💡 Tout montant compte, quelle que soit sa valeur. Votre générosité fait la différence.
+                  </p>
                 </div>
               </div>
 

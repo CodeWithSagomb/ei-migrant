@@ -47,3 +47,5 @@ coverage
 .cache
 .temp
 .tmp
+
+.vercel
